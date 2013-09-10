@@ -1,0 +1,72 @@
+Imports System.Xml
+Imports System.Data
+
+
+Public Class Form1
+
+    Private Sub Button1_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles Button1.Click
+
+        'create a openfile dialog
+        Dim open_file As New OpenFileDialog
+
+        'give its filter
+        open_file.Filter = "Files (*.xml) | *.xml"
+
+        Try
+
+            'if ok click at opendialog
+            If open_file.ShowDialog() = DialogResult.OK Then
+
+                'define a xml reader
+                Dim xmlFile As XmlReader
+
+                'get xml data from the path
+                xmlFile = XmlReader.Create(open_file.FileName, New XmlReaderSettings())
+
+                'define a new dataset
+                Dim ds As New DataSet
+
+                'read xml data
+                ds.ReadXml(xmlFile)
+
+                'show xml data in datagridview
+                DataGridView1.DataSource = ds.Tables(0)
+
+            End If
+
+        Catch ex As Exception
+
+            'if any problem show error
+            MsgBox(ex.Message)
+
+        End Try
+    End Sub
+
+    Private Sub Button2_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles Button2.Click
+
+        'define a save dialog
+        Dim save_file As New SaveFileDialog
+
+        'give its extension
+        save_file.Filter = "xml files (*.xml)|*.xml|All files (*.*)|*.*"
+
+        'select xml
+        save_file.FilterIndex = 2
+
+
+        'create a datatable
+        Dim my_datatable As New DataTable
+
+        'if ok click
+        If save_file.ShowDialog() = DialogResult.OK Then
+
+            'get datagridview source to datatable
+            my_datatable = CType(DataGridView1.DataSource, DataTable)
+
+
+            'save datatable with xml format
+            my_datatable.WriteXml(save_file.FileName)
+
+        End If
+    End Sub
+End Class
